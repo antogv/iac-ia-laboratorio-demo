@@ -1,6 +1,6 @@
 output "resumen" {
   description = "Datos previstos tras una aplicación local"
-  value       = {
+  value = {
     portal = module.portal.resumen
     ayuda  = module.ayuda.resumen
   }
