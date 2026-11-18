@@ -34,3 +34,12 @@ Este repositorio contiene **un único proyecto ficticio**, `portal-demo`. Vas a 
 | `.github/workflows/validacion.yml` | Instala OpenTofu y ejecuta las comprobaciones en GitHub Actions. |
 
 El workflow calcula un plan, **no ejecuta `tofu apply`** y no crea una web ni infraestructura comercial. Si tu equipo permite VS Code local, puedes usarlo con **esa misma copia**: el código y la comprobación en Actions son los mismos. La ruta principal, explicada paso a paso en los Word, funciona desde el navegador.
+
+## Arquitectura ficticia
+
+- **Necesidad:** representar el portal principal (`portal-demo` por defecto) y una ficha de ayuda (`portal-ayuda`) como datos de ejemplo. No son aplicaciones web ni servicios desplegados.
+- **Reutilización:** las instancias `portal` y `ayuda`, declaradas en `main.tf`, usan el mismo módulo local `./modulo_ficha`. El módulo define una ficha mediante `terraform_data` y expone sus datos con el output `resumen`.
+- **Entradas:** cada instancia recibe `nombre` y `entorno`. El módulo exige que el nombre empiece por `portal-` y que el entorno sea `desarrollo`, `pruebas` o `integracion`. La raíz usa `portal-demo` y `pruebas` por defecto; la ficha de ayuda usa `portal-ayuda` y comparte el entorno seleccionado.
+- **Escenarios:** el plan predeterminado usa los valores por defecto. `escenario-integracion.tfvars` cambia el portal a `portal-interno` y el entorno a `integracion`; ambos planes recorren las mismas instancias y el mismo módulo.
+- **Evidencias:** el workflow de GitHub Actions instala OpenTofu 1.13.9 y ejecuta `init` sin backend, comprobación recursiva de formato, `validate` y dos planes (predeterminado e integración). Resume sus resultados en el resumen de Actions y publica `evidencia.txt` como artefacto.
+- **Limitación:** no se ejecuta `apply` ni se crean servidores, redes u otros recursos cloud reales. `terraform_data` solo representa datos para el plan, por lo que este ejercicio no genera infraestructura ni costes cloud.
