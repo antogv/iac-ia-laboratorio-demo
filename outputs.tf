@@ -1,4 +1,7 @@
 output "resumen" {
   description = "Datos previstos tras una aplicación local"
-  value       = terraform_data.aplicacion.output
+  value       = {
+    portal = module.portal.resumen
+    ayuda  = module.ayuda.resumen
+  }
 }
