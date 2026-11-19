@@ -43,3 +43,11 @@ El workflow calcula un plan, **no ejecuta `tofu apply`** y no crea una web ni in
 - **Escenarios:** el plan predeterminado usa los valores por defecto. `escenario-integracion.tfvars` cambia el portal a `portal-interno` y el entorno a `integracion`; ambos planes recorren las mismas instancias y el mismo módulo.
 - **Evidencias:** el workflow de GitHub Actions instala OpenTofu 1.13.9 y ejecuta `init` sin backend, comprobación recursiva de formato, `validate` y dos planes (predeterminado e integración). Resume sus resultados en el resumen de Actions y publica `evidencia.txt` como artefacto.
 - **Limitación:** no se ejecuta `apply` ni se crean servidores, redes u otros recursos cloud reales. `terraform_data` solo representa datos para el plan, por lo que este ejercicio no genera infraestructura ni costes cloud.
+
+## Política del laboratorio
+
+La política permite únicamente dos fichas ficticias: `module.portal.terraform_data.ficha` y `module.ayuda.terraform_data.ficha`. Ambas deben ser recursos `terraform_data` con una única acción de creación, tener nombres que empiecen por `portal-` (la ayuda debe llamarse exactamente `portal-ayuda`) y compartir un entorno conocido, no sensible y permitido: `desarrollo`, `pruebas` o `integracion`.
+
+`tofu validate` comprueba si la configuración es válida para OpenTofu; no determina si los cambios previstos cumplen estas reglas del laboratorio. La política analiza el JSON de cada plan y responde a esa pregunta de negocio antes de cualquier aplicación.
+
+Los resultados aparecen en los pasos de plan y política de GitHub Actions, en el resumen de la ejecución y en el artefacto `evidencia.txt`. El workflow no ejecuta `tofu apply`: las fichas usan `terraform_data` y no despliegan infraestructura. Es un control didáctico y limitado, no una garantía de gobierno de producción ni una autorización para desplegar cambios reales.
